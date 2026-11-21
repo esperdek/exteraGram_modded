@@ -692,7 +692,7 @@ public class ConnectionsManager extends BaseController {
                     if (BuildVars.LOGS_ENABLED) {
                         FileLog.d("start firebase task");
                     }
-                    FirebaseTask task = new FirebaseTask(currentAccount);
+                    DnsTxtLoadTask task = new DnsTxtLoadTask(currentAccount);
                     task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null, null, null);
                     currentTask = task;
                 }
@@ -1372,8 +1372,5 @@ public class ConnectionsManager extends BaseController {
                 }
             });
         }
-    }
-
-    
     }
 }
