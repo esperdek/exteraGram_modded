@@ -3876,6 +3876,9 @@ public class MessagesController extends BaseController implements NotificationCe
             if (message.peer_id.channel_id == 0) {
                 MessageObject existMessageObject = dialogMessagesByIds.get(message.id);
                 if (existMessageObject != null) {
+                    if (com.exteragram.messenger.ExteraConfig.antiDelete && (MessageObject.getMedia(message) instanceof TLRPC.TL_messageMediaEmpty || MessageObject.getMedia(message).photo instanceof TLRPC.TL_photoEmpty || MessageObject.getMedia(message).document instanceof TLRPC.TL_documentEmpty)) {
+                        return;
+                    }
                     existMessageObject.messageOwner.media = MessageObject.getMedia(message);
                     if (MessageObject.getMedia(message).ttl_seconds != 0 && (MessageObject.getMedia(message).photo instanceof TLRPC.TL_photoEmpty || MessageObject.getMedia(message).document instanceof TLRPC.TL_documentEmpty)) {
                         existMessageObject.setType();
@@ -5394,6 +5397,9 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     private boolean checkDeletingTask(boolean runnable) {
+        if (com.exteragram.messenger.ExteraConfig.antiDelete) {
+            return false;
+        }
         int currentServerTime = getConnectionsManager().getCurrentTime();
 
         if ((currentDeletingTaskMids != null || currentDeletingTaskMediaMids != null) && (runnable || currentDeletingTaskTime != 0 && currentDeletingTaskTime <= currentServerTime)) {
@@ -13085,6 +13091,9 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     protected void deleteMessagesByPush(long dialogId, ArrayList<Integer> ids, long channelId) {
+        if (com.exteragram.messenger.ExteraConfig.antiDelete) {
+            return;
+        }
         getMessagesStorage().getStorageQueue().postRunnable(() -> {
             AndroidUtilities.runOnUIThread(() -> {
                 getNotificationCenter().postNotificationName(NotificationCenter.messagesDeleted, ids, channelId, false);
@@ -14213,6 +14222,9 @@ public class MessagesController extends BaseController implements NotificationCe
                 }
                 dialogs_read_outbox_max.put(dialogId, Math.max(value, update.max_id));
             } else if (baseUpdate instanceof TLRPC.TL_updateDeleteMessages) {
+                if (com.exteragram.messenger.ExteraConfig.antiDelete) {
+                    continue;
+                }
                 TLRPC.TL_updateDeleteMessages update = (TLRPC.TL_updateDeleteMessages) baseUpdate;
                 if (deletedMessages == null) {
                     deletedMessages = new LongSparseArray<>();
@@ -14224,6 +14236,9 @@ public class MessagesController extends BaseController implements NotificationCe
                 }
                 arrayList.addAll(update.messages);
             } else if (baseUpdate instanceof TLRPC.TL_updateDeleteScheduledMessages) {
+                if (com.exteragram.messenger.ExteraConfig.antiDelete) {
+                    continue;
+                }
                 TLRPC.TL_updateDeleteScheduledMessages update = (TLRPC.TL_updateDeleteScheduledMessages) baseUpdate;
 
                 if (scheduledDeletedMessages == null) {
@@ -14701,6 +14716,9 @@ public class MessagesController extends BaseController implements NotificationCe
                 }
                 dialogs_read_outbox_max.put(dialogId, Math.max(value, update.max_id));
             } else if (baseUpdate instanceof TLRPC.TL_updateDeleteChannelMessages) {
+                if (com.exteragram.messenger.ExteraConfig.antiDelete) {
+                    continue;
+                }
                 TLRPC.TL_updateDeleteChannelMessages update = (TLRPC.TL_updateDeleteChannelMessages) baseUpdate;
                 if (BuildVars.LOGS_ENABLED) {
                     FileLog.d(baseUpdate + " channelId = " + update.channel_id);
