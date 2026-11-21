@@ -24,7 +24,8 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Arm64 Release APK
-        run: ./gradlew assembleArm64Release --stacktrace
+        run: ./gradlew assembleArm64Release --no-configuration-cache --stacktrace
+        
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
