@@ -78,6 +78,10 @@ public class ExteraConfig {
     public static boolean archiveOnPull;
     public static boolean disableUnarchiveSwipe;
 
+    // dumbukGram Privacy
+    public static boolean ghostMode;
+    public static boolean antiDelete;
+
     // Chats
     public static float stickerSize;
 
@@ -175,6 +179,10 @@ public class ExteraConfig {
 
             archiveOnPull = preferences.getBoolean("archiveOnPull", false);
             disableUnarchiveSwipe = preferences.getBoolean("disableUnarchiveSwipe", true);
+
+            // dumbukGram Privacy
+            ghostMode = preferences.getBoolean("ghostMode", true);
+            antiDelete = preferences.getBoolean("antiDelete", true);
 
             // Appearance
             avatarCorners = preferences.getFloat("avatarCorners", 30.0f);
@@ -331,7 +339,7 @@ public class ExteraConfig {
     }
 
     public static boolean getLogging() {
-        return ApplicationLoader.applicationContext.getSharedPreferences("systemConfig", Activity.MODE_PRIVATE).getBoolean("logsEnabled", false); //BuildVars.DEBUG_VERSION);
+        return ApplicationLoader.applicationContext.getSharedPreferences("systemConfig", Activity.MODE_PRIVATE).getBoolean("logsEnabled", false);
     }
 
     public static String getCurrentLangName() {
